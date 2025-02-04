@@ -1,4 +1,4 @@
--- Active: 1737614163483@@127.0.0.1@3306@oboy_project
+-- Active: 1737614280833@@127.0.0.1@3306@oboy_project
 CREATE DATABASE OBOY_PROJECT;
 
 CREATE TABLE country(
