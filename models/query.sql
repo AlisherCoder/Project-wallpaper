@@ -1,76 +1,79 @@
--- Active: 1737614280833@@127.0.0.1@3306@oboy_project
-CREATE DATABASE OBOY_PROJECT;
+-- Active: 1737614754101@@127.0.0.1@3306@wallpaperstore
+CREATE DATABASE wallpaperstore;
 
-CREATE TABLE country(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name_uz VARCHAR(255),
-    name_ru VARCHAR(255)
+CREATE TABLE countries(
+    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    name_uz VARCHAR(255) NOT NULL,
+    name_ru VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE brands(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name_uz VARCHAR(255),
-    name_ru VARCHAR(255),
-    image VARCHAR(255)
+    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    name_uz VARCHAR(255) NOT NULL,
+    name_ru VARCHAR(255) NOT NULL,
+    image VARCHAR(255) NOT NULL
 );
 
 
-CREATE TABLE product(
-    id int AUTO_INCREMENT PRIMARY KEY,
-    name_uz VARCHAR(255),
-    name_ru VARCHAR(255),
-    price int,
-    old_price int,
+CREATE TABLE products(
+    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    name_uz VARCHAR(255) NOT NULL,
+    name_ru VARCHAR(255) NOT NULL,
+    price FLOAT,
+    oldPrice FLOAT,
     description_uz TEXT,
     description_ru TEXT,
-    washable INT,
+    washable BOOLEAN,
     size VARCHAR(255),
-    available INT,
-    brands_id INT,
-    contry_id INT,
-    FOREIGN KEY (brands_id) REFERENCES brands(id),
-    FOREIGN KEY (contry_id) REFERENCES country(id)
+    inStock BOOLEAN,
+    brandsID INT,
+    contryID INT,
+    image VARCHAR(255),
+    FOREIGN KEY (brandsID) REFERENCES brands(id),
+    FOREIGN KEY (contryID) REFERENCES countries(id)
 );
 
-CREATE TABLE category(
-    id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE categories(
+    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     name_uz VARCHAR(255),
     name_ru VARCHAR(255),
     image VARCHAR(255)
 );
 
-CREATE TABLE categoryItem(
-    id INT AUTO_INCREMENT PRIMARY key,
-    category_id INT,
-    product_id INT,
-    FOREIGN KEY (category_id) REFERENCES category(id),
-    FOREIGN KEY (product_id) REFERENCES product(id)
+CREATE TABLE categoryItems(
+    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    categoryID INT,
+    productID INT,
+    FOREIGN KEY (categoryID) REFERENCES categories(id),
+    FOREIGN KEY (productID) REFERENCES products(id)
 );
 
-
-CREATE Table user(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    fullname VARCHAR(255),
-    password VARCHAR(255),
-    phone VARCHAR(255),
+CREATE TABLE users(
+    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    firstName VARCHAR(255) NOT NULL,
+    lastName VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    phoneNumber VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
     address VARCHAR(255),
-    role VARCHAR(255)
+    role ENUM("admin", "user") NOT NULL DEFAULT "user",
+    status ENUM("active", "inactive") NOT NULL DEFAULT "inactive"
 );
 
 CREATE TABLE orders(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    total_price VARCHAR(255),
-    user_id INT,
-    FOREIGN KEY (user_id) REFERENCES user(id)
+    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    totalPrice FLOAT,
+    userId INT,
+    FOREIGN KEY (userId) REFERENCES users(id)
 );
 
-CREATE TABLE orderItem(
-    id int AUTO_INCREMENT PRIMARY KEY,
-    total INT,
-    count INT,
-    product_id INT,
-    orders_id INT,
-    FOREIGN KEY (product_id) REFERENCES product(id),
-    FOREIGN KEY (orders_id) REFERENCES orders(id)
+CREATE TABLE orderItems(
+    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    orderId INT,
+    productId INT,
+    quantity INT,
+    totalSum FLOAT,
+    FOREIGN KEY (productId) REFERENCES products(id),
+    FOREIGN KEY (orderId) REFERENCES orders(id)
 );
 
