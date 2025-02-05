@@ -1,10 +1,11 @@
 import Joi from "joi";
 
-function countryValidation(data) {
+function countriesValidation(data) {
     const country = Joi.object({
-        name : Joi.string().required().max(30).min(3)
+        name_uz : Joi.string().required().max(300).min(3),
+        name_ru : Joi.string().required().max(300).min(3)
     })
-    return country.validate(data, {abortEarly: true});
+    return countries.validate(data, {abortEarly: true});
 };
 
-export default countryValidation; 
+export default countriesValidation; 

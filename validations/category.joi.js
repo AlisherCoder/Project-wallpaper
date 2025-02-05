@@ -1,10 +1,13 @@
 import Joi from "joi";
 
-function categoryValidation(data) {
-    const category = Joi.object({
-        name : Joi.string().required().max(30).min(3)
+function categoriesValidation(data) {
+    const categories = Joi.object({
+        name_ru : Joi.string().required().max(300).min(3),
+        name_uz : Joi.string().required().max(300).min(3),
+        image: Joi.string()
+
     })
-    return category.validate(data, {abortEarly: true});
+    return categories.validate(data, {abortEarly: true});
 };
 
-export default categoryValidation;
+export default categoriesValidation;
