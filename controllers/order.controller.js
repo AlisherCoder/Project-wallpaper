@@ -1,10 +1,24 @@
 import { OrderPatchValid, OrderPostValid } from "../validations/order-joi.js";
 import db from "../config/db.js";
+import {
+   getAllOrder,
+   getByUserId,
+   getOneOrder,
+} from "../queries/order-query.js";
 
 async function getAll(req, res) {
    try {
-      let [data] = await db.query("select * from orders");
+      let { userId } = req.query;
 
+      if (userId) {
+         let [data] = await db.query(getByUserId);
+         if (!data.length) {
+            return res.status(404).send({ message: "Not found data" });
+         }
+         return res.status(200).send({ data });
+      }
+
+      let [data] = await db.query(getAllOrder);
       if (!data.length) {
          return res.status(200).send({ message: "Empty orders" });
       }
@@ -18,7 +32,7 @@ async function getAll(req, res) {
 async function getOne(req, res) {
    try {
       let { id } = req.params;
-      let [data] = await db.query("select * from orders where id = ?", [id]);
+      let [data] = await db.query(getOneOrder, [id]);
 
       if (!data.length) {
          return res.status(404).send({ message: "Not found data" });
@@ -72,7 +86,7 @@ async function remove(req, res) {
 async function update(req, res) {
    try {
       let { id } = req.params;
-      
+
       let { error } = OrderPatchValid.validate(req.body);
       if (error) {
          return res.status(422).send({ message: error.details[0].message });

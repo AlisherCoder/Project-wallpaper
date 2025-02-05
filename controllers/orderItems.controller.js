@@ -3,11 +3,51 @@ import {
    OrderItemPostValid,
 } from "../validations/order-joi.js";
 import db from "../config/db.js";
+import {
+   getAllOrderItems,
+   getByOrderId,
+   getByProductId,
+   getByTotalSum,
+   getOneOrderItems,
+} from "../queries/orderItems-query.js";
 
 async function getAll(req, res) {
    try {
-      let [data] = await db.query("select * from orderItems");
+      let { orderId, productId, quantity, totalSum } = req.query;
 
+      if (orderId) {
+         let [data] = await db.query(getByOrderId, [orderId]);
+         if (!data.length) {
+            return res.status(404).send({ message: "Not found data" });
+         }
+         return res.status(200).send({ data });
+      }
+
+      if (productId) {
+         let [data] = await db.query(getByProductId, [productId]);
+         if (!data.length) {
+            return res.status(404).send({ message: "Not found data" });
+         }
+         return res.status(200).send({ data });
+      }
+
+      if (quantity) {
+         let [data] = await db.query(getByQuantity, [quantity]);
+         if (!data.length) {
+            return res.status(404).send({ message: "Not found data" });
+         }
+         return res.status(200).send({ data });
+      }
+
+      if (totalSum) {
+         let [data] = await db.query(getByTotalSum, [totalSum]);
+         if (!data.length) {
+            return res.status(404).send({ message: "Not found data" });
+         }
+         return res.status(200).send({ data });
+      }
+
+      let [data] = await db.query(getAllOrderItems);
       if (!data.length) {
          return res.status(200).send({ message: "Empty orderItems" });
       }
@@ -21,9 +61,7 @@ async function getAll(req, res) {
 async function getOne(req, res) {
    try {
       let { id } = req.params;
-      let [data] = await db.query("select * from orderItems where id = ?", [
-         id,
-      ]);
+      let [data] = await db.query(getOneOrderItems, [id]);
 
       if (!data.length) {
          return res.status(404).send({ message: "Not found data" });
