@@ -1,12 +1,13 @@
-import Joi from "joi";
+import joi from "joi";
 
-function categoryItemsValidation(data) {
-    const categoryItems = Joi.object({
-        categoryID : Joi.number().positive(),
-        productID : Joi.number().positive()
+const CatItemPostValid = joi.object({
+   categoryID: joi.number().positive().required(),
+   productID: joi.number().positive().required(),
+});
 
-    })
-    return categoryItems.validate(data, {abortEarly: true});
-};
+const CatItemPatchValid = joi.object({
+   categoryID: joi.number().positive(),
+   productID: joi.number().positive(),
+});
 
-export default categoryItemsValidation;
+export { CatItemPatchValid, CatItemPostValid };

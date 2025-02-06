@@ -1,81 +1,106 @@
 import db from "../config/db.js";
+import {
+   CountryPatchValid,
+   CountryPostValid,
+} from "../validations/country.joi.js";
 
 export async function getAll(req, res) {
-    try {
-        const [countries] = await db.query("SELECT * FROM countries");
-        res.status(200).json(countries);
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
+   try {
+      let [data] = await db.query("SELECT * FROM countries");
+      if (!data.length) {
+         return res.status(404).send({ message: "Not found data" });
+      }
+
+      res.status(200).send({ data });
+   } catch (error) {
+      res.status(500).send({ message: error.message });
+   }
 }
 
 export async function getOne(req, res) {
-    try {
-        const { id } = req.params;
-        const [country] = await db.query("SELECT * FROM countries WHERE id = ?", [id]);
+   try {
+      const { id } = req.params;
+      const [data] = await db.query("SELECT * FROM countries WHERE id = ?", [
+         id,
+      ]);
 
-        if (country.length === 0) {
-            return res.status(404).send({ message: "Country not found" });
-        }
+      if (data.length === 0) {
+         return res.status(404).send({ message: "Not found data" });
+      }
 
-        res.status(200).json(country[0]);
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
+      res.status(200).send({ data: data[0] });
+   } catch (error) {
+      res.status(500).send({ message: error.message });
+   }
 }
 
 export async function create(req, res) {
-    try {
-        const { name_uz, name_ru } = req.body;
+   try {
+      let { error } = CountryPostValid.validate(req.body);
+      if (error) {
+         return res.status(422).send({ message: error.details[0].message });
+      }
+      let { name_uz, name_ru } = req.body;
 
-        if (!name_uz || !name_ru) {
-            return res.status(400).send({ message: "Both name_uz and name_ru are required" });
-        }
+      let [result] = await db.query(
+         "INSERT INTO countries (name_uz, name_ru) VALUES (?, ?)",
+         [name_uz, name_ru]
+      );
 
-        const [result] = await db.query(
-            "INSERT INTO countries (name_uz, name_ru) VALUES (?, ?)",
-            [name_uz, name_ru]
-        );
+      let [found] = await db.query("select * from countries where id = ?", [
+         result.insertId,
+      ]);
 
-        res.status(201).json({ message: "Country created successfully", countryId: result.insertId });
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
+      res.status(201).send({ data: found[0] });
+   } catch (error) {
+      res.status(500).send({ message: error.message });
+   }
 }
 
 export async function update(req, res) {
-    try {
-        const { id } = req.params;
-        const { name_uz, name_ru } = req.body;
+   try {
+      const { id } = req.params;
+      let { error } = CountryPatchValid.validate(req.body);
+      if (error) {
+         return res.status(422).send({ message: error.details[0].message });
+      }
 
-        const [country] = await db.query("SELECT * FROM countries WHERE id = ?", [id]);
+      let [data] = await db.query("select * from countries where id = ?", [id]);
+      if (!data.length) {
+         return res.status(404).send({ message: "Not found data" });
+      }
 
-        if (country.length === 0) {
-            return res.status(404).send({ message: "Country not found" });
-        }
+      let keys = Object.keys(req.body);
+      let values = Object.values(req.body);
+      let queryKey = keys.map((key) => (key += "= ?"));
+      await db.query(
+         `update countries set ${queryKey.join(",")} where id = ?`,
+         [...values, id]
+      );
 
-        await db.query(
-            "UPDATE countries SET name_uz = ?, name_ru = ? WHERE id = ?",
-            [name_uz, name_ru, id]
-        );
+      let [updated] = await db.query("select * from countries where id = ?", [
+         id,
+      ]);
 
-        res.status(200).json({ message: "Country updated successfully" });
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
+      res.status(200).send({ data: updated[0] });
+   } catch (error) {
+      res.status(500).send({ message: error.message });
+   }
 }
 
 export async function remove(req, res) {
-    try {
-        const { id } = req.params;
-        const [result] = await db.query("DELETE FROM countries WHERE id = ?", [id]);
+   try {
+      let { id } = req.params;
 
-        if (result.affectedRows === 0) {
-            return res.status(404).send({ message: "Country not found" });
-        }
+      let [data] = await db.query("select * from countries where id = ?", [id]);
+      if (data.length === 0) {
+         return res.status(404).send({ message: "Not found data" });
+      }
 
-        res.status(200).json({ message: "Country deleted successfully" });
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
+      await db.query("DELETE FROM countries WHERE id = ?", [id]);
+
+      res.status(200).send({ message: "Deleted successfully" });
+   } catch (error) {
+      res.status(500).send({ message: error.message });
+   }
 }

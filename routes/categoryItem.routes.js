@@ -1,12 +1,18 @@
 import { Router } from "express";
-import { getAll, getOne, create, update, remove } from "../controllers/categoryItem.controller.js";
+import {
+   getAll,
+   getOne,
+   create,
+   update,
+   remove,
+} from "../controllers/categoryItem.controller.js";
 
-const router = Router();
+const categoryItemRoute = Router();
 
-router.get("/", getAll);
-router.get("/:id", getOne);
-router.post("/", create);
-router.put("/:id", update);
-router.delete("/:id", remove);
+categoryItemRoute.get("/", getAll);
+categoryItemRoute.post("/", create);
+categoryItemRoute.get("/:id", getOne);
+categoryItemRoute.delete("/:id", remove);
+categoryItemRoute.patch("/:id", update);
 
-export default router;
+export default categoryItemRoute;

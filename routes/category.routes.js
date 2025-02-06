@@ -1,12 +1,19 @@
 import { Router } from "express";
-import { getAll, getOne, create, update, remove } from "../controllers/category.controller.js";
+import {
+   getAll,
+   getOne,
+   create,
+   update,
+   remove,
+} from "../controllers/category.controller.js";
+import upload from "../middlewares/multer.js";
 
-const router = Router();
+const categoryRoute = Router();
 
-router.get("/", getAll);
-router.get("/:id", getOne);
-router.post("/", create);
-router.put("/:id", update);
-router.delete("/:id", remove);
+categoryRoute.get("/", getAll);
+categoryRoute.post("/", upload.single("image"), create);
+categoryRoute.get("/:id", getOne);
+categoryRoute.delete("/:id", remove);
+categoryRoute.patch("/:id", upload.single("image"), update);
 
-export default router;
+export default categoryRoute;

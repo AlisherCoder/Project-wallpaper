@@ -1,7 +1,5 @@
--- Active: 1737614163483@@127.0.0.1@3306@otp
-
+-- Active: 1737614280833@@127.0.0.1@3306@wallpaperstore
 CREATE DATABASE wallpaperstore;
-use DATABASE  otp;
 
 CREATE TABLE countries(
     id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,

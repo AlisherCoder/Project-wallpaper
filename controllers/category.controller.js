@@ -1,110 +1,135 @@
 import db from "../config/db.js";
-import multer from "multer";
+import fs from "fs";
 import path from "path";
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "uploads/");
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}${path.extname(file.originalname)}`);
-    }
-});
-
-const upload = multer({ storage }).single("image");
+import { CatPatchValid, CatPostValid } from "../validations/category.joi.js";
 
 export async function getAll(req, res) {
-    try {
-        const [categories] = await db.query("SELECT * FROM categories");
-        res.status(200).json(categories);
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
+   try {
+      let [data] = await db.query("SELECT * FROM categories");
+      if (!data.length) {
+         return res.status(404).send({ message: "Not found data" });
+      }
+
+      res.status(200).send({ data });
+   } catch (error) {
+      res.status(500).send({ message: error.message });
+   }
 }
 
 export async function getOne(req, res) {
-    try {
-        const { id } = req.params;
-        const [category] = await db.query("SELECT * FROM categories WHERE id = ?", [id]);
+   try {
+      const { id } = req.params;
+      const [data] = await db.query("SELECT * FROM categories WHERE id = ?", [
+         id,
+      ]);
 
-        if (category.length === 0) {
-            return res.status(404).send({ message: "Category not found" });
-        }
+      if (data.length === 0) {
+         return res.status(404).send({ message: "Not found data" });
+      }
 
-        res.status(200).json(category[0]);
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
+      res.status(200).send({ data: data[0] });
+   } catch (error) {
+      res.status(500).send({ message: error.message });
+   }
 }
 
 export async function create(req, res) {
-    upload(req, res, async (err) => {
-        if (err) {
-            return res.status(500).send({ message: err.message });
-        }
+   try {
+      let { error } = CatPostValid.validate(req.body);
+      if (error) {
+         try {
+            fs.unlinkSync(req.file.path);
+         } catch (error) {}
+         return res.status(422).send({ message: error.details[0].message });
+      }
+      let { name_uz, name_ru } = req.body;
 
-        try {
-            const { name_uz, name_ru } = req.body;
-            const image = req.file ? req.file.filename : null;
+      let [result] = await db.query(
+         "INSERT INTO categories (name_uz, name_ru, image) VALUES (?, ?, ?)",
+         [name_uz, name_ru, req.file.filename]
+      );
 
-            if (!name_uz || !name_ru || !image) {
-                return res.status(400).send({ message: "All fields are required" });
-            }
+      let [found] = await db.query("select * from categories where id = ?", [
+         result.insertId,
+      ]);
 
-            const [result] = await db.query(
-                "INSERT INTO categories (name_uz, name_ru, image) VALUES (?, ?, ?)",
-                [name_uz, name_ru, image]
-            );
-
-            res.status(201).json({ message: "Category created successfully", categoryId: result.insertId });
-        } catch (error) {
-            res.status(500).send({ message: error.message });
-        }
-    });
+      res.status(201).send({ data: found[0] });
+   } catch (error) {
+      try {
+         fs.unlinkSync(req.file.path);
+      } catch (error) {}
+      res.status(500).send({ message: error.message });
+   }
 }
 
 export async function update(req, res) {
-    upload(req, res, async (err) => {
-        if (err) {
-            return res.status(500).send({ message: err.message });
-        }
+   try {
+      const { id } = req.params;
+      let { error } = CatPatchValid.validate(req.body);
+      if (error) {
+         try {
+            fs.unlinkSync(req.file.path);
+         } catch (error) {}
+         return res.status(422).send({ message: error.details[0].message });
+      }
 
-        try {
-            const { id } = req.params;
-            const { name_uz, name_ru } = req.body;
-            const image = req.file ? req.file.filename : null;
+      let [data] = await db.query("select * from categories where id = ?", [
+         id,
+      ]);
+      if (!data.length) {
+         return res.status(404).send({ message: "Not found data" });
+      }
 
-            const [category] = await db.query("SELECT * FROM categories WHERE id = ?", [id]);
+      let keys = Object.keys(req.body);
+      let values = Object.values(req.body);
 
-            if (category.length === 0) {
-                return res.status(404).send({ message: "Category not found" });
-            }
+      if (req.file) {
+         keys.push("image");
+         values.push(req.file.filename);
+         try {
+            let filepath = path.join("uploads", data[0].image);
+            fs.unlinkSync(filepath);
+         } catch (error) {}
+      }
 
-            const newImage = image || category[0].image;
+      let queryKey = keys.map((key) => (key += "= ?"));
+      await db.query(
+         `update categories set ${queryKey.join(",")} where id = ?`,
+         [...values, id]
+      );
 
-            await db.query(
-                "UPDATE categories SET name_uz = ?, name_ru = ?, image = ? WHERE id = ?",
-                [name_uz, name_ru, newImage, id]
-            );
+      let [updated] = await db.query("select * from categories where id = ?", [
+         id,
+      ]);
 
-            res.status(200).json({ message: "Category updated successfully" });
-        } catch (error) {
-            res.status(500).send({ message: error.message });
-        }
-    });
+      res.status(200).send({ data: updated[0] });
+   } catch (error) {
+      try {
+         fs.unlinkSync(req.file.path);
+      } catch (error) {}
+      res.status(500).send({ message: error.message });
+   }
 }
 
 export async function remove(req, res) {
-    try {
-        const { id } = req.params;
-        const [result] = await db.query("DELETE FROM categories WHERE id = ?", [id]);
+   try {
+      let { id } = req.params;
 
-        if (result.affectedRows === 0) {
-            return res.status(404).send({ message: "Category not found" });
-        }
+      let [data] = await db.query("select * from categories where id = ?", [
+         id,
+      ]);
+      if (data.length === 0) {
+         return res.status(404).send({ message: "Not found data" });
+      }
 
-        res.status(200).json({ message: "Category deleted successfully" });
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
+      await db.query("DELETE FROM categories WHERE id = ?", [id]);
+      try {
+         let filepath = path.join("uploads", data[0].image);
+         fs.unlinkSync(filepath);
+      } catch (error) {}
+
+      res.status(200).send({ message: "Deleted successfully" });
+   } catch (error) {
+      res.status(500).send({ message: error.message });
+   }
 }

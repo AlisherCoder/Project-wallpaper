@@ -1,12 +1,18 @@
 import { Router } from "express";
-import { getAll, getOne, create, update, remove } from "../controllers/country.controller.js";
+import {
+   getAll,
+   getOne,
+   create,
+   update,
+   remove,
+} from "../controllers/country.controller.js";
 
-const router = Router();
+const countryRoute = Router();
 
-router.get("/", getAll);
-router.get("/:id", getOne);
-router.post("/", create);
-router.put("/:id", update);
-router.delete("/:id", remove);
+countryRoute.get("/", getAll);
+countryRoute.post("/", create);
+countryRoute.get("/:id", getOne);
+countryRoute.delete("/:id", remove);
+countryRoute.patch("/:id", update);
 
-export default router;
+export default countryRoute;

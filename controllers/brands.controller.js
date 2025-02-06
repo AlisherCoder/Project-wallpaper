@@ -1,110 +1,128 @@
 import db from "../config/db.js";
-import multer from "multer";
+import fs from "fs";
 import path from "path";
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "uploads/");
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}${path.extname(file.originalname)}`);
-    }
-});
-
-const upload = multer({ storage }).single("image");
+import { BrandPatchValid, BrandPostValid } from "../validations/brands.joi.js";
 
 export async function getAll(req, res) {
-    try {
-        const [brands] = await db.query("SELECT * FROM brands");
-        res.status(200).json(brands);
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
+   try {
+      let [data] = await db.query("SELECT * FROM brands");
+      if (!data.length) {
+         return res.status(404).send({ message: "Not found data" });
+      }
+
+      res.status(200).send({ data });
+   } catch (error) {
+      res.status(500).send({ message: error.message });
+   }
 }
 
 export async function getOne(req, res) {
-    try {
-        const { id } = req.params;
-        const [brand] = await db.query("SELECT * FROM brands WHERE id = ?", [id]);
+   try {
+      const { id } = req.params;
+      const [brand] = await db.query("SELECT * FROM brands WHERE id = ?", [id]);
 
-        if (brand.length === 0) {
-            return res.status(404).send({ message: "Brand not found" });
-        }
+      if (brand.length === 0) {
+         return res.status(404).send({ message: "Brand not found" });
+      }
 
-        res.status(200).json(brand[0]);
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
+      res.status(200).send({ data: brand[0] });
+   } catch (error) {
+      res.status(500).send({ message: error.message });
+   }
 }
 
 export async function create(req, res) {
-    upload(req, res, async (err) => {
-        if (err) {
-            return res.status(500).send({ message: err.message });
-        }
+   try {
+      let { error } = BrandPostValid.validate(req.body);
+      if (error) {
+         try {
+            fs.unlinkSync(req.file.path);
+         } catch (error) {}
+         return res.status(422).send({ message: error.details[0].message });
+      }
+      let { name_uz, name_ru } = req.body;
 
-        try {
-            const { name_uz, name_ru } = req.body;
-            const image = req.file ? req.file.filename : null;
+      let [result] = await db.query(
+         "INSERT INTO brands (name_uz, name_ru, image) VALUES (?, ?, ?)",
+         [name_uz, name_ru, req.file.filename]
+      );
 
-            if (!name_uz || !name_ru || !image) {
-                return res.status(400).send({ message: "All fields are required" });
-            }
+      let [found] = await db.query("select * from brands where id = ?", [
+         result.insertId,
+      ]);
 
-            const [result] = await db.query(
-                "INSERT INTO brands (name_uz, name_ru, image) VALUES (?, ?, ?)",
-                [name_uz, name_ru, image]
-            );
-
-            res.status(201).json({ message: "Brand created successfully", brandId: result.insertId });
-        } catch (error) {
-            res.status(500).send({ message: error.message });
-        }
-    });
+      res.status(201).send({ data: found[0] });
+   } catch (error) {
+      try {
+         fs.unlinkSync(req.file.path);
+      } catch (error) {}
+      res.status(500).send({ message: error.message });
+   }
 }
 
 export async function update(req, res) {
-    upload(req, res, async (err) => {
-        if (err) {
-            return res.status(500).send({ message: err.message });
-        }
+   try {
+      const { id } = req.params;
+      let { error } = BrandPatchValid.validate(req.body);
+      if (error) {
+         try {
+            fs.unlinkSync(req.file.path);
+         } catch (error) {}
+         return res.status(422).send({ message: error.details[0].message });
+      }
 
-        try {
-            const { id } = req.params;
-            const { name_uz, name_ru } = req.body;
-            const image = req.file ? req.file.filename : null;
+      let [brand] = await db.query("select * from brands where id = ?", [id]);
+      if (!brand.length) {
+         return res.status(404).send({ message: "Not found data" });
+      }
 
-            const [brand] = await db.query("SELECT * FROM brands WHERE id = ?", [id]);
+      let keys = Object.keys(req.body);
+      let values = Object.values(req.body);
 
-            if (brand.length === 0) {
-                return res.status(404).send({ message: "Brand not found" });
-            }
+      if (req.file) {
+         keys.push("image");
+         values.push(req.file.filename);
+         try {
+            let filepath = path.join("uploads", brand[0].image);
+            console.log(filepath);
+            fs.unlinkSync(filepath);
+         } catch (error) {}
+      }
 
-            const newImage = image || brand[0].image;
+      let queryKey = keys.map((key) => (key += "= ?"));
+      await db.query(`update brands set ${queryKey.join(",")} where id = ?`, [
+         ...values,
+         id,
+      ]);
 
-            await db.query(
-                "UPDATE brands SET name_uz = ?, name_ru = ?, image = ? WHERE id = ?",
-                [name_uz, name_ru, newImage, id]
-            );
+      let [updated] = await db.query("select * from brands where id = ?", [id]);
 
-            res.status(200).json({ message: "Brand updated successfully" });
-        } catch (error) {
-            res.status(500).send({ message: error.message });
-        }
-    });
+      res.status(200).send({ data: updated[0] });
+   } catch (error) {
+      try {
+         fs.unlinkSync(req.file.path);
+      } catch (error) {}
+      res.status(500).send({ message: error.message });
+   }
 }
 
 export async function remove(req, res) {
-    try {
-        const { id } = req.params;
-        const [result] = await db.query("DELETE FROM brands WHERE id = ?", [id]);
+   try {
+      let { id } = req.params;
 
-        if (result.affectedRows === 0) {
-            return res.status(404).send({ message: "Brand not found" });
-        }
+      let [brand] = await db.query("select * from brands where id = ?", [id]);
+      if (brand.length === 0) {
+         return res.status(404).send({ message: "Brand not found" });
+      }
 
-        res.status(200).json({ message: "Brand deleted successfully" });
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
+      await db.query("DELETE FROM brands WHERE id = ?", [id]);
+      try {
+         let filepath = path.join("uploads", brand[0].image);
+         fs.unlinkSync(filepath);
+      } catch (error) {}
+
+      res.status(200).send({ message: "Brand deleted successfully" });
+   } catch (error) {
+      res.status(500).send({ message: error.message });
+   }
 }

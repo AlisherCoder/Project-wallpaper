@@ -1,12 +1,19 @@
 import { Router } from "express";
-import { getAll, getOne, create, update, remove } from "../controllers/brands.controller.js";
+import {
+   getAll,
+   getOne,
+   create,
+   update,
+   remove,
+} from "../controllers/brands.controller.js";
+import upload from "../middlewares/multer.js";
 
-const router = Router();
+const brandRoute = Router();
 
-router.get("/", getAll);
-router.get("/:id", getOne);
-router.post("/", create);
-router.put("/:id", update);
-router.delete("/:id", remove);
+brandRoute.get("/", getAll);
+brandRoute.get("/:id", getOne);
+brandRoute.post("/", upload.single("image"), create);
+brandRoute.delete("/:id", remove);
+brandRoute.patch("/:id", upload.single("image"), update);
 
-export default router;
+export default brandRoute;

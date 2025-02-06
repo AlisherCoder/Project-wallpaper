@@ -1,11 +1,13 @@
-import Joi from "joi";
+import joi from "joi";
 
-function countriesValidation(data) {
-    const country = Joi.object({
-        name_uz : Joi.string().required().max(300).min(3),
-        name_ru : Joi.string().required().max(300).min(3)
-    })
-    return countries.validate(data, {abortEarly: true});
-};
+const CountryPostValid = joi.object({
+   name_uz: joi.string().required(),
+   name_ru: joi.string().required(),
+});
 
-export default countriesValidation; 
+const CountryPatchValid = joi.object({
+   name_uz: joi.string(),
+   name_ru: joi.string(),
+});
+
+export { CountryPatchValid, CountryPostValid };

@@ -1,13 +1,13 @@
-import Joi from "joi";
+import joi from "joi";
 
-function categoriesValidation(data) {
-    const categories = Joi.object({
-        name_ru : Joi.string().required().max(300).min(3),
-        name_uz : Joi.string().required().max(300).min(3),
-        image: Joi.string()
+const CatPostValid = joi.object({
+   name_uz: joi.string().required(),
+   name_ru: joi.string().required(),
+});
 
-    })
-    return categories.validate(data, {abortEarly: true});
-};
+const CatPatchValid = joi.object({
+   name_uz: joi.string(),
+   name_ru: joi.string(),
+});
 
-export default categoriesValidation;
+export { CatPatchValid, CatPostValid };
