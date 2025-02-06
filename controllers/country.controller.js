@@ -6,6 +6,30 @@ import {
 
 export async function getAll(req, res) {
    try {
+      let { name_ru, name_uz } = req.query;
+
+      if (name_uz) {
+         let [data] = await db.query(
+            "select * from countries where name_uz = ?",
+            [name_uz]
+         );
+         if (!data.length) {
+            return res.status(404).send({ message: "Not found data" });
+         }
+         return res.status(200).send({ data });
+      }
+
+      if (name_ru) {
+         let [data] = await db.query(
+            "select * from countries where name_ru = ?",
+            [name_ru]
+         );
+         if (!data.length) {
+            return res.status(404).send({ message: "Not found data" });
+         }
+         return res.status(200).send({ data });
+      }
+
       let [data] = await db.query("SELECT * FROM countries");
       if (!data.length) {
          return res.status(404).send({ message: "Not found data" });
