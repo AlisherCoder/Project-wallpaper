@@ -1,4 +1,4 @@
--- Active: 1737614754101@@127.0.0.1@3306@wallpaperstore
+-- Active: 1737614280833@@127.0.0.1@3306@wallpaperstore
 CREATE DATABASE wallpaperstore;
 
 CREATE TABLE countries(

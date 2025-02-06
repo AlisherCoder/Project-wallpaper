@@ -16,7 +16,7 @@ let userRoute = Router();
  * @swagger
  * /users:
  *   get:
- *     summary: Get a list of all users, or users filtered by their first name.
+ *     summary: Get a list of all users, or filter users by first name, last name, pagination, and limit per page.
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -28,15 +28,43 @@ let userRoute = Router();
  *           type: string
  *           example: "John"
  *         description: The first name of the user to filter by (optional).
+ *       - in: query
+ *         name: lastname
+ *         required: false
+ *         schema:
+ *           type: string
+ *           example: "Doe"
+ *         description: The last name of the user to filter by (optional).
+ *       - in: query
+ *         name: phonenumber
+ *         required: false
+ *         schema:
+ *           type: string
+ *           example: "+998908881155"
+ *         description: The phone number of the user to filter by (optional).
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: The page number for pagination (optional).
+ *       - in: query
+ *         name: take
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 4
+ *         description: The number of users to return per page (default is 4, optional).
  *     responses:
  *       200:
- *         description: A list of users. If `firstname` is provided, filters users by their first name.
+ *         description: A list of users. If query parameters are provided, filters users accordingly.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 msg:
+ *                 message:
  *                   type: string
  *                   example: "All the Users"
  *                 data:
@@ -106,7 +134,7 @@ let userRoute = Router();
  *                                   type: string
  *                                   example: "Brand Name"
  *       400:
- *         description: Invalid query parameter (e.g., incorrect `firstname` format)
+ *         description: Invalid query parameter (e.g., incorrect format for filters)
  *         content:
  *           application/json:
  *             schema:
@@ -136,6 +164,7 @@ let userRoute = Router();
  *                   type: string
  *                   example: "An unexpected error occurred."
  */
+
 
 
 userRoute.get("/", authentication, authorization(["admin", "user"]), findAll);
