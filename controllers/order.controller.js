@@ -62,7 +62,7 @@ async function create(req, res) {
          created.insertId,
       ]);
 
-      res.status(200).send({ data: found[0] });
+      res.status(201).send({ data: found[0] });
    } catch (error) {
       res.status(500).send({ message: error.message });
    }

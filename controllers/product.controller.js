@@ -163,7 +163,7 @@ async function create(req, res) {
          created.insertId,
       ]);
 
-      res.status(200).send({ data: found[0] });
+      res.status(201).send({ data: found[0] });
    } catch (error) {
       try {
          fs.unlinkSync(req.file.path);
@@ -251,6 +251,10 @@ async function sail(req, res) {
    try {
       let { id } = req.params;
       let { discount } = req.body;
+
+      if (typeof discount != "number") {
+         return res.status(422).send({ message: "Discount must be number" });
+      }
 
       let [product] = await db.query("select * from products where id = ?", id);
       if (!product.length) {
