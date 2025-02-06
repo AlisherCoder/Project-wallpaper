@@ -104,7 +104,7 @@ const getByNameUz = `SELECT p.*,
 FROM products AS p 
 JOIN brands AS b ON p.brandsID = b.id
 JOIN countries AS c ON p.contryID = c.id
-where name_uz = ?
+where name_uz LIKE ?
 GROUP BY p.id`;
 
 const getByNameRu = `SELECT p.*,
@@ -115,7 +115,7 @@ const getByNameRu = `SELECT p.*,
 FROM products AS p 
 JOIN brands AS b ON p.brandsID = b.id
 JOIN countries AS c ON p.contryID = c.id
-where name_ru = ?
+where name_ru LIKE ?
 GROUP BY p.id`;
 
 

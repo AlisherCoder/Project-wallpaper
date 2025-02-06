@@ -1,10 +1,10 @@
-import mysql from "mysql2/promise";
+import mysql from "mysql2/promise"
 
-const db = await mysql.createConnection({
-   host: "localhost",
-   user: "root",
-   password: "953901313",
-   database: "wallpaperstore",
-});
+let db = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "yusuf777$",
+    database: "wallpaperstore"
+})
 
-export default db;
+export default db

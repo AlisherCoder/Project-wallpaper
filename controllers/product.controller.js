@@ -31,6 +31,7 @@ async function getAll(req, res) {
          name_ru
       } = req.query;
 
+      
       if (price) {
          let [data] = await db.query(getByPrice, [price]);
          if (!data.length) {
@@ -38,16 +39,18 @@ async function getAll(req, res) {
          }
          return res.status(200).send({ data });
       }
-
+      
       if (name_uz) {
+         name_uz = `%${name_uz}%`
          let [data] = await db.query(getByNameUz, [name_uz]);
          if (!data.length) {
             return res.status(404).send({ message: "Not found data" });
          }
          return res.status(200).send({ data });
       }
-
+      
       if (name_ru) {
+         name_ru = `%${name_ru}%`
          let [data] = await db.query(getByNameRu, [name_ru]);
          if (!data.length) {
             return res.status(404).send({ message: "Not found data" });

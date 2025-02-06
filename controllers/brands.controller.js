@@ -6,9 +6,10 @@ import { BrandPatchValid, BrandPostValid } from "../validations/brands.joi.js";
 export async function getAll(req, res) {
    try {
       let { name_uz, name_ru } = req.query;
-
+      
       if (name_uz) {
-         let [data] = await db.query("select * from brands where name_uz = ?", [
+         name_uz = `%${name_uz}%`
+         let [data] = await db.query("select * from brands where name_uz LIKE ?", [
             name_uz,
          ]);
          if (!data.length) {
@@ -16,9 +17,10 @@ export async function getAll(req, res) {
          }
          return res.status(200).send({ data });
       }
-
+      
       if (name_ru) {
-         let [data] = await db.query("select * from brands where name_ru = ?", [
+         name_ru = `%${name_ru}%`
+         let [data] = await db.query("select * from brands where name_ru LIKE ?", [
             name_ru,
          ]);
          if (!data.length) {
