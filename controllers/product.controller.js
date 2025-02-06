@@ -12,6 +12,8 @@ import {
    getByWashable,
    getByBrand,
    getByCountry,
+   getByNameUz,
+   getByNameRu,
 } from "../queries/prd-query.js";
 
 async function getAll(req, res) {
@@ -25,10 +27,28 @@ async function getAll(req, res) {
          countryId,
          maxPrice,
          minPrice,
+         name_uz,
+         name_ru
       } = req.query;
 
       if (price) {
          let [data] = await db.query(getByPrice, [price]);
+         if (!data.length) {
+            return res.status(404).send({ message: "Not found data" });
+         }
+         return res.status(200).send({ data });
+      }
+
+      if (name_uz) {
+         let [data] = await db.query(getByNameUz, [name_uz]);
+         if (!data.length) {
+            return res.status(404).send({ message: "Not found data" });
+         }
+         return res.status(200).send({ data });
+      }
+
+      if (name_ru) {
+         let [data] = await db.query(getByNameRu, [name_ru]);
          if (!data.length) {
             return res.status(404).send({ message: "Not found data" });
          }

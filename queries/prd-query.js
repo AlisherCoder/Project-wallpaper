@@ -96,6 +96,29 @@ JOIN countries AS c ON p.contryID = c.id
 where contryID = ?
 GROUP BY p.id`;
 
+const getByNameUz = `SELECT p.*,
+    JSON_OBJECT ('id', b.id, 'name_uz', b.name_uz, 'name_ru', b.name_ru, 'image', b.image)
+    AS brand,
+    JSON_OBJECT ('id', c.id, 'name_uz', c.name_uz, 'name_ru', c.name_ru)
+    AS country
+FROM products AS p 
+JOIN brands AS b ON p.brandsID = b.id
+JOIN countries AS c ON p.contryID = c.id
+where name_uz = ?
+GROUP BY p.id`;
+
+const getByNameRu = `SELECT p.*,
+    JSON_OBJECT ('id', b.id, 'name_uz', b.name_uz, 'name_ru', b.name_ru, 'image', b.image)
+    AS brand,
+    JSON_OBJECT ('id', c.id, 'name_uz', c.name_uz, 'name_ru', c.name_ru)
+    AS country
+FROM products AS p 
+JOIN brands AS b ON p.brandsID = b.id
+JOIN countries AS c ON p.contryID = c.id
+where name_ru = ?
+GROUP BY p.id`;
+
+
 export {
    getAllPrd,
    getOnePrd,
@@ -106,4 +129,6 @@ export {
    getByWashable,
    getByBrand,
    getByCountry,
+   getByNameRu,
+   getByNameUz
 };
