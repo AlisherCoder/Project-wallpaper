@@ -1,4 +1,4 @@
-import { OrderPatchValid, OrderPostValid } from "../validations/order-joi.js";
+import { OrderPostValid } from "../validations/order-joi.js";
 import db from "../config/db.js";
 import {
    getAllOrder,
@@ -11,7 +11,7 @@ async function getAll(req, res) {
       let { userId } = req.query;
 
       if (userId) {
-         let [data] = await db.query(getByUserId);
+         let [data] = await db.query(getByUserId, [userId]);
          if (!data.length) {
             return res.status(404).send({ message: "Not found data" });
          }
@@ -51,12 +51,26 @@ async function create(req, res) {
          return res.status(422).send({ message: error.details[0].message });
       }
 
-      let { totalPrice, userId } = req.body;
-
+      let { totalPrice, userId, products } = req.body;
       let [created] = await db.query(
          "insert into orders (totalPrice, userId) values(?,?)",
          [totalPrice, userId]
       );
+
+      if (!products.length) {
+         return res.status(400).send({ message: "Products cannot be empty." });
+      }
+
+      for (let prd of products) {
+         try {
+            await db.query(
+               "insert into orderItems (orderId, productId, quantity, totalSum) values(?,?,?,?)",
+               [created.insertId, prd.productId, prd.quantity, prd.totalSum]
+            );
+         } catch (error) {
+            return res.status(500).send({ message: error.message });
+         }
+      }
 
       let [found] = await db.query("select * from orders where id = ?", [
          created.insertId,
@@ -83,30 +97,4 @@ async function remove(req, res) {
    }
 }
 
-async function update(req, res) {
-   try {
-      let { id } = req.params;
-
-      let { error } = OrderPatchValid.validate(req.body);
-      if (error) {
-         return res.status(422).send({ message: error.details[0].message });
-      }
-
-      let keys = Object.keys(req.body);
-      let values = Object.values(req.body);
-      let queryKey = keys.map((key) => (key += "= ?"));
-
-      await db.query(`update orders set ${queryKey.join(",")} where id = ?`, [
-         ...values,
-         id,
-      ]);
-
-      let [updated] = await db.query("select * from orders where id = ?", [id]);
-
-      res.status(200).send({ data: updated[0] });
-   } catch (error) {
-      res.status(500).send({ message: error.message });
-   }
-}
-
-export { getAll, getOne, create, remove, update };
+export { getAll, getOne, create, remove };
