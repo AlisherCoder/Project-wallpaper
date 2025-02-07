@@ -28,10 +28,9 @@ async function getAll(req, res) {
          maxPrice,
          minPrice,
          name_uz,
-         name_ru
+         name_ru,
       } = req.query;
 
-      
       if (price) {
          let [data] = await db.query(getByPrice, [price]);
          if (!data.length) {
@@ -39,18 +38,18 @@ async function getAll(req, res) {
          }
          return res.status(200).send({ data });
       }
-      
+
       if (name_uz) {
-         name_uz = `%${name_uz}%`
+         name_uz = `%${name_uz}%`;
          let [data] = await db.query(getByNameUz, [name_uz]);
          if (!data.length) {
             return res.status(404).send({ message: "Not found data" });
          }
          return res.status(200).send({ data });
       }
-      
+
       if (name_ru) {
-         name_ru = `%${name_ru}%`
+         name_ru = `%${name_ru}%`;
          let [data] = await db.query(getByNameRu, [name_ru]);
          if (!data.length) {
             return res.status(404).send({ message: "Not found data" });
@@ -93,10 +92,15 @@ async function getAll(req, res) {
                JSON_OBJECT ('id', b.id, 'name_uz', b.name_uz, 'name_ru', b.name_ru, 'image', b.image)
                AS brand,
                JSON_OBJECT ('id', c.id, 'name_uz', c.name_uz, 'name_ru', c.name_ru)
-               AS country
+               AS country,
+               JSON_ARRAYAGG (
+                  JSON_OBJECT ('id', ct.id, 'name_ru', ct.name_ru, 'name_uz', ct.name_uz, 'image', ct.image)
+               ) AS categories
             FROM products AS p 
             JOIN brands AS b ON p.brandsID = b.id
             JOIN countries AS c ON p.contryID = c.id
+            JOIN categoryitems as cti ON cti.productID = p.id
+            JOIN categories as ct ON ct.id = cti.categoryID
             GROUP BY p.id
             LIMIT ${take} OFFSET ${skip}`
          );
@@ -167,20 +171,40 @@ async function create(req, res) {
          return res.status(422).send({ message: error.details[0].message });
       }
 
+      let { categories, ...data } = value;
+      categories = JSON.parse(categories);
+
       let newPrd = {
-         ...value,
+         ...data,
          price: req.body.price || 0,
          image: req.file.filename,
       };
 
       let keys = Object.keys(newPrd);
       let values = Object.values(newPrd);
-      let query = keys.map((k) => "?");
+      let query = keys.map((k) => " ?");
 
       let [created] = await db.query(
          `insert into products (${keys.join(",")})values(${query.join(",")})`,
          values
       );
+
+      if (!categories.length) {
+         return res
+            .status(400)
+            .send({ message: "Categories cannot be empty." });
+      }
+
+      for (let categoryId of categories) {
+         try {
+            await db.query(
+               "insert into categoryItems (productId, categoryId) values (?,?)",
+               [created.insertId, categoryId]
+            );
+         } catch (error) {
+            return res.status(500).send({ message: error.message });
+         }
+      }
 
       let [found] = await db.query("select * from products where id = ?", [
          created.insertId,
@@ -218,7 +242,7 @@ async function remove(req, res) {
 
 async function update(req, res) {
    try {
-      let { error } = PrdPatchValid.validate(req.body);
+      let { error, value } = PrdPatchValid.validate(req.body);
       if (error) {
          try {
             fs.unlinkSync(req.file.path);
@@ -237,7 +261,7 @@ async function update(req, res) {
       }
 
       let newPrd = {
-         ...req.value,
+         ...value,
       };
 
       if (req.file) {

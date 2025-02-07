@@ -131,30 +131,63 @@ productRoute.get("/:id", getOne);
  *               - name_ru
  *               - price
  *               - brandsID
- *               - contryID
+ *               - countryID
  *               - image
+ *               - categoriesId
  *             properties:
  *               name_uz:
  *                 type: string
+ *                 example: "Dori nomi o‘zbekcha"
  *               name_ru:
  *                 type: string
+ *                 example: "Название лекарства"
  *               price:
  *                 type: number
+ *                 example: 19.99
  *               brandsID:
  *                 type: integer
- *               contryID:
+ *                 example: 3
+ *               countryID:
  *                 type: integer
+ *                 example: 1
+ *               categoriesId:
+ *                 type: array
+ *                 items:
+ *                   type: integer
+ *                 example: [2, 5, 8]
  *               image:
  *                 type: string
  *                 format: binary
  *     responses:
  *       201:
- *         description: Product created
+ *         description: Product created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 name_uz:
+ *                   type: string
+ *                 name_ru:
+ *                   type: string
+ *                 price:
+ *                   type: number
+ *                 brandsID:
+ *                   type: integer
+ *                 countryID:
+ *                   type: integer
+ *                 categoriesId:
+ *                   type: array
+ *                   items:
+ *                     type: integer
  *       422:
  *         description: Validation error
  *       500:
  *         description: Server error
  */
+
 productRoute.post("/", authentication, authorization(["admin"]), upload.single("image"), create);
 
 /**
