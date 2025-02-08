@@ -30,16 +30,16 @@ const options = {
 const specs = swaggerJsdoc(options);
 
 const app = express();
-app.use(express.json());
 
 app.use(
-   cors({
-      origin: "*", // Barcha manbalarga ruxsat berish (faqat test uchun)
-      methods: "GET,POST,PUT,DELETE",
-      allowedHeaders: "Content-Type,Authorization",
-   })
+  cors({
+    origin: "*", // Barcha manbalarga ruxsat berish (faqat test uchun)
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
+  })
 );
 
+app.use(express.json());
 app.use("/api", mainRoute);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
