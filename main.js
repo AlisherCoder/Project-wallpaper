@@ -20,7 +20,7 @@ const options = {
       },
       servers: [
          {
-            url: "http://51.44.160.108/:3000/api",
+            url: "http://51.44.160.108:3000/api",
          },
       ],
    },
