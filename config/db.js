@@ -3,7 +3,7 @@ import mysql from "mysql2/promise";
 const db = mysql.createPool({
    host: "localhost",
    user: "root",
-   password: "953901313",
+   password: "12345",
    database: "wallpaperstore",
    waitForConnections: true,
    connectionLimit: 10,
