@@ -32,6 +32,15 @@ let registerRoute = Router();
  *               email:
  *                 type: string
  *                 example: "example@email.com"
+ *               firstName:
+ *                  type: string
+ *                  example: "Alex"
+ *               lastName: 
+ *                  type: string
+ *                  example: "Fergusson"
+ *               address: 
+ *                  type: string
+ *                  example: "Tashkent"
  *     responses:
  *       200:
  *         description: User registered successfully
