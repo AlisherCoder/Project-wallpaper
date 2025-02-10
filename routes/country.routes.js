@@ -139,7 +139,6 @@ countryRoute.post("/", authentication, authorization(["admin"]), create);
  */
 countryRoute.patch("/:id", authentication, authorization(["admin"]), update);
 
-
 /**
  * @swagger
  * /countries/{id}:

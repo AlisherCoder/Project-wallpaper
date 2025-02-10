@@ -165,9 +165,7 @@ let userRoute = Router();
  *                   example: "An unexpected error occurred."
  */
 
-
-
-userRoute.get("/", authentication, authorization(["admin", "user"]), findAll);
+userRoute.get("/", authentication, authorization(["admin"]), findAll);
 
 /**
  * @swagger
@@ -218,7 +216,7 @@ userRoute.get("/", authentication, authorization(["admin", "user"]), findAll);
  *       500:
  *         description: Internal server error
  */
-userRoute.get("/:id", authentication, authorization(["admin", "user"]), findOne);
+userRoute.get("/:id", authentication, authorization(["admin"]), findOne);
 
 /**
  * @swagger

@@ -6,7 +6,13 @@
  */
 
 import { Router } from "express";
-import { getAll, getOne, create, update, remove } from "../controllers/brands.controller.js";
+import {
+   getAll,
+   getOne,
+   create,
+   update,
+   remove,
+} from "../controllers/brands.controller.js";
 import authentication from "../middlewares/authentication.js";
 import authorization from "../middlewares/authorization.js";
 import upload from "../middlewares/multer.js";
@@ -44,7 +50,7 @@ let brandRoute = Router();
  *       500:
  *         description: Internal server error
  */
-brandRoute.get("/", authentication, authorization(["admin", "user"]), getAll);
+brandRoute.get("/", getAll);
 
 /**
  * @swagger
@@ -69,7 +75,7 @@ brandRoute.get("/", authentication, authorization(["admin", "user"]), getAll);
  *       500:
  *         description: Internal server error
  */
-brandRoute.get("/:id", authentication, authorization(["admin", "user"]), getOne);
+brandRoute.get("/:id", getOne);
 
 /**
  * @swagger
@@ -103,7 +109,13 @@ brandRoute.get("/:id", authentication, authorization(["admin", "user"]), getOne)
  *       500:
  *         description: Internal server error
  */
-brandRoute.post("/", authentication, authorization(["admin"]), upload.single("image"), create);
+brandRoute.post(
+   "/",
+   authentication,
+   authorization(["admin"]),
+   upload.single("image"),
+   create
+);
 
 /**
  * @swagger
@@ -146,7 +158,13 @@ brandRoute.post("/", authentication, authorization(["admin"]), upload.single("im
  *       500:
  *         description: Internal server error
  */
-brandRoute.patch("/:id", authentication, authorization(["admin"]), upload.single("image"), update);
+brandRoute.patch(
+   "/:id",
+   authentication,
+   authorization(["admin"]),
+   upload.single("image"),
+   update
+);
 
 /**
  * @swagger
@@ -185,10 +203,6 @@ brandRoute.delete("/:id", authentication, authorization(["admin"]), remove);
  */
 
 export default brandRoute;
-
-
-
-
 
 // import { Router } from "express";
 // import {

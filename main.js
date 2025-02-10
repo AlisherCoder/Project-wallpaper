@@ -36,7 +36,7 @@ app.use(
     origin: "*", // Barcha manbalarga ruxsat berish (faqat test uchun)
     methods: "GET,POST,PUT,DELETE",
     allowedHeaders: "Content-Type,Authorization",
-  })
+  }) 
 );
 
 app.use(express.json());
