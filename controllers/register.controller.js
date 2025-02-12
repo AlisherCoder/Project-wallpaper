@@ -8,7 +8,7 @@ import { userValidation, validatePhoneNumber, validateEmail } from "../validatio
 dotenv.config()
 const OTPSECRET = process.env.OTPSECRET
 
-totp.options = { step: 300 };
+totp.options = { step: 1800 };
 
 const api = axios.create({
     baseURL: "https://notify.eskiz.uz/api",
