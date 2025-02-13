@@ -193,7 +193,7 @@ productRoute.get("/:id", getOne);
  *                   type: number
  *                 brandsID:
  *                   type: integer
- *                 countryID:
+ *                 contryID:
  *                   type: integer
  *                 categoriesId:
  *                   type: array
