@@ -76,7 +76,7 @@ countryRoute.get("/:id", getOne);
  *     summary: Create a new country
  *     tags: [Countries]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -108,7 +108,7 @@ countryRoute.post("/", authentication, authorization(["admin"]), create);
  *     summary: Update a country
  *     tags: [Countries]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -146,7 +146,7 @@ countryRoute.patch("/:id", authentication, authorization(["admin"]), update);
  *     summary: Delete a country
  *     tags: [Countries]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
