@@ -218,6 +218,16 @@ productRoute.post("/", authentication, authorization(["admin"]), upload.single("
  *                 type: string
  *               price:
  *                 type: number
+ *               description_uz
+ *                 type: text
+ *               description_ru
+ *                 type: text
+ *               size
+ *                 type: string
+ *               washable
+ *                 type: boolean
+ *               inStock
+ *                 type: boolean
  *               brandsID:
  *                 type: integer
  *               contryID:
