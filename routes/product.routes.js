@@ -21,7 +21,6 @@ let productRoute = Router();
  *   description: API for managing products
  */
 
-
 /**
  * @swagger
  * /products:
@@ -130,6 +129,11 @@ productRoute.get("/:id", getOne);
  *               - name_uz
  *               - name_ru
  *               - price
+ *               - description_uz
+ *               - description_ru
+ *               - size
+ *               - washable
+ *               - inStock
  *               - brandsID
  *               - countryID
  *               - image
@@ -137,13 +141,26 @@ productRoute.get("/:id", getOne);
  *             properties:
  *               name_uz:
  *                 type: string
- *                 example: "Dori nomi o‘zbekcha"
+ *                 example: "Product"
  *               name_ru:
  *                 type: string
- *                 example: "Название лекарства"
+ *                 example: "Продукт"
  *               price:
  *                 type: number
  *                 example: 19.99
+ *               description_uz:
+ *                 type: text
+ *                 example: Product haqida
+ *               description_ru:
+ *                 type: text
+ *                 example: Про продукт
+ *               size:
+ *                 type: string
+ *                 example: 1.20
+ *               washable:
+ *                 type: boolean
+ *               inStock:
+ *                 type: boolean
  *               brandsID:
  *                 type: integer
  *                 example: 3
@@ -188,7 +205,13 @@ productRoute.get("/:id", getOne);
  *         description: Server error
  */
 
-productRoute.post("/", authentication, authorization(["admin"]), upload.single("image"), create);
+productRoute.post(
+   "/",
+   authentication,
+   authorization(["admin"]),
+   upload.single("image"),
+   create
+);
 
 /**
  * @swagger
@@ -218,15 +241,15 @@ productRoute.post("/", authentication, authorization(["admin"]), upload.single("
  *                 type: string
  *               price:
  *                 type: number
- *               description_uz
+ *               description_uz:
  *                 type: text
- *               description_ru
+ *               description_ru:
  *                 type: text
- *               size
+ *               size:
  *                 type: string
- *               washable
+ *               washable:
  *                 type: boolean
- *               inStock
+ *               inStock:
  *                 type: boolean
  *               brandsID:
  *                 type: integer
@@ -245,7 +268,13 @@ productRoute.post("/", authentication, authorization(["admin"]), upload.single("
  *       500:
  *         description: Server error
  */
-productRoute.patch("/:id", authentication, authorization(["admin"]), upload.single("image"), update);
+productRoute.patch(
+   "/:id",
+   authentication,
+   authorization(["admin"]),
+   upload.single("image"),
+   update
+);
 
 /**
  * @swagger
