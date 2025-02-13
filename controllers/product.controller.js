@@ -307,8 +307,8 @@ async function sail(req, res) {
       if (!product.length) {
          return res.status(404).send({ message: "Not found data" });
       }
-      let { oldPrice } = product[0];
-      let sail = oldPrice - (oldPrice * discount) / 100;
+      let { price } = product[0];
+      let sail = price - (price * discount) / 100;
 
       if (sail <= 0) {
          return res.status(400).send({
@@ -316,7 +316,10 @@ async function sail(req, res) {
          });
       }
 
-      await db.query("update products set price = ? where id = ?", [sail, id]);
+      await db.query("update products set discountPrice = ? where id = ?", [
+         sail,
+         id,
+      ]);
       let [updated] = await db.query("select * from products where id = ?", [
          id,
       ]);

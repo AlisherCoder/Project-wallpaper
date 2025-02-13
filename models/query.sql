@@ -20,7 +20,7 @@ CREATE TABLE products(
     name_uz VARCHAR(255) NOT NULL,
     name_ru VARCHAR(255) NOT NULL,
     price FLOAT,
-    oldPrice FLOAT,
+    discountPrice FLOAT DEFAULT NULL,
     description_uz TEXT,
     description_ru TEXT,
     washable BOOLEAN,
@@ -40,7 +40,7 @@ CREATE TABLE categories(
     image VARCHAR(255)
 );
 
-CREATE TABLE categoryItems(
+CREATE TABLE categoryitems(
     id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     categoryID INT,
     productID INT,
