@@ -135,7 +135,7 @@ productRoute.get("/:id", getOne);
  *               - washable
  *               - inStock
  *               - brandsID
- *               - countryID
+ *               - contryID
  *               - image
  *               - categoriesId
  *             properties:
@@ -164,7 +164,7 @@ productRoute.get("/:id", getOne);
  *               brandsID:
  *                 type: integer
  *                 example: 3
- *               countryID:
+ *               contryID:
  *                 type: integer
  *                 example: 1
  *               categoriesId:
