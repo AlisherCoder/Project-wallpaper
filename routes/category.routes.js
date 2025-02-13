@@ -79,7 +79,7 @@ categoryRoute.get("/:id", getOne);
  *     summary: Create a new category
  *     tags: [Categories]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -103,7 +103,7 @@ categoryRoute.get("/:id", getOne);
  *         description: Server error
  */
 
-categoryRoute.post("/", authentication, authorization(["admin"]), upload.single("image"), upload.single("image"), create);
+categoryRoute.post("/", authentication, authorization(["admin"]),  upload.single("image"), create);
 
 
 /**
@@ -113,7 +113,7 @@ categoryRoute.post("/", authentication, authorization(["admin"]), upload.single(
  *     summary: Delete a category
  *     tags: [Categories]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -140,7 +140,7 @@ categoryRoute.delete("/:id", authentication, authorization(["admin"]), upload.si
  *     summary: Update a category
  *     tags: [Categories]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -173,6 +173,6 @@ categoryRoute.delete("/:id", authentication, authorization(["admin"]), upload.si
  *         description: Server error
  */
 
-categoryRoute.patch("/:id", authentication, authorization(["admin"]), upload.single("image"), upload.single("image"), update);
+categoryRoute.patch("/:id", authentication, authorization(["admin"]), upload.single("image"), update);
 
 export default categoryRoute;

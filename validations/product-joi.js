@@ -25,7 +25,7 @@ const PrdPatchValid = joi.object({
    inStock: joi.boolean(),
    brandsID: joi.number().positive(),
    contryID: joi.number().positive(),
-   categories: joi.array()
+   categories: joi.array(),
 });
 
 export { PrdPostValid, PrdPatchValid };

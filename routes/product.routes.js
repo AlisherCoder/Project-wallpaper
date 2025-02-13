@@ -119,7 +119,7 @@ productRoute.get("/:id", getOne);
  *     summary: Create a new product
  *     tags: [Products]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -197,7 +197,7 @@ productRoute.post("/", authentication, authorization(["admin"]), upload.single("
  *     summary: Update a product
  *     tags: [Products]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -244,7 +244,7 @@ productRoute.patch("/:id", authentication, authorization(["admin"]), upload.sing
  *     summary: Delete a product
  *     tags: [Products]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -270,7 +270,7 @@ productRoute.delete("/:id", authentication, authorization(["admin"]), remove);
  *     summary: Apply discount to a product
  *     tags: [Products]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
