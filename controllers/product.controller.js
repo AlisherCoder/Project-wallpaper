@@ -171,8 +171,8 @@ async function create(req, res) {
          return res.status(422).send({ message: error.details[0].message });
       }
 
-      let { categories, ...data } = value;
-      categories = JSON.parse(categories);
+      let { categoriesId, ...data } = value;
+      categoriesId = JSON.parse(categoriesId);
 
       let newPrd = {
          ...data,
@@ -189,13 +189,13 @@ async function create(req, res) {
          values
       );
 
-      if (!categories.length) {
+      if (!categoriesId.length) {
          return res
             .status(400)
-            .send({ message: "Categories cannot be empty." });
+            .send({ message: "categoriesId cannot be empty." });
       }
 
-      for (let categoryId of categories) {
+      for (let categoryId of categoriesId) {
          try {
             await db.query(
                "insert into categoryItems (productId, categoryId) values (?,?)",
