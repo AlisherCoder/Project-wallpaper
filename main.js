@@ -32,11 +32,11 @@ const specs = swaggerJsdoc(options);
 const app = express();
 
 app.use(
-  cors({
-    origin: "*", // Barcha manbalarga ruxsat berish (faqat test uchun)
-    methods: "GET,POST,PUT,DELETE",
-    allowedHeaders: "Content-Type,Authorization",
-  }) 
+   cors({
+      origin: "*", // Barcha manbalarga ruxsat berish (faqat test uchun)
+      methods: "GET,POST,PUT,DELETE",
+      allowedHeaders: "Content-Type,Authorization",
+   })
 );
 
 app.use(express.json());

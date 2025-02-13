@@ -6,23 +6,25 @@ import { BrandPatchValid, BrandPostValid } from "../validations/brands.joi.js";
 export async function getAll(req, res) {
    try {
       let { name_uz, name_ru } = req.query;
-      
+
       if (name_uz) {
-         name_uz = `%${name_uz}%`
-         let [data] = await db.query("select * from brands where name_uz LIKE ?", [
-            name_uz,
-         ]);
+         name_uz = `%${name_uz}%`;
+         let [data] = await db.query(
+            "select * from brands where name_uz LIKE ?",
+            [name_uz]
+         );
          if (!data.length) {
-            return res.status(404).send({ message: "Not found data" });
+            return res.status(200).send({ message: "Not found data" });
          }
          return res.status(200).send({ data });
       }
-      
+
       if (name_ru) {
-         name_ru = `%${name_ru}%`
-         let [data] = await db.query("select * from brands where name_ru LIKE ?", [
-            name_ru,
-         ]);
+         name_ru = `%${name_ru}%`;
+         let [data] = await db.query(
+            "select * from brands where name_ru LIKE ?",
+            [name_ru]
+         );
          if (!data.length) {
             return res.status(404).send({ message: "Not found data" });
          }
@@ -31,7 +33,7 @@ export async function getAll(req, res) {
 
       let [data] = await db.query("SELECT * FROM brands");
       if (!data.length) {
-         return res.status(404).send({ message: "Not found data" });
+         return res.status(200).send({ message: "Empty data" });
       }
 
       res.status(200).send({ data });
@@ -108,7 +110,6 @@ export async function update(req, res) {
          values.push(req.file.filename);
          try {
             let filepath = path.join("uploads", brand[0].image);
-            console.log(filepath);
             fs.unlinkSync(filepath);
          } catch (error) {}
       }
@@ -133,8 +134,8 @@ export async function update(req, res) {
 export async function remove(req, res) {
    try {
       let { id } = req.params;
-
       let [brand] = await db.query("select * from brands where id = ?", [id]);
+      
       if (brand.length === 0) {
          return res.status(404).send({ message: "Brand not found" });
       }
