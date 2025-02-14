@@ -31,12 +31,9 @@ async function getAll(req, res) {
          name_ru,
       } = req.query;
 
-      maxPrice = JSON.parse(maxPrice);
-      minPrice = JSON.parse(minPrice);
-      price = JSON.parse(price);
-      washable = JSON.parse(washable);
-
       if (price) {
+         price = JSON.parse(price);
+
          let [data] = await db.query(getByPrice, [price]);
          if (!data.length) {
             return res.status(404).send({ message: "Not found data" });
@@ -63,6 +60,8 @@ async function getAll(req, res) {
       }
 
       if (maxPrice && minPrice) {
+         maxPrice = JSON.parse(maxPrice);
+         minPrice = JSON.parse(minPrice);
          let [data] = await db.query(getByMaxPriceAndMinPrice, [
             minPrice,
             maxPrice,
@@ -75,6 +74,8 @@ async function getAll(req, res) {
       }
 
       if (maxPrice) {
+         maxPrice = JSON.parse(maxPrice);
+
          let [data] = await db.query(getByMaxPrice, [maxPrice]);
          if (!data.length) {
             return res.status(404).send({ message: "Not found data" });
@@ -83,6 +84,8 @@ async function getAll(req, res) {
       }
 
       if (minPrice) {
+         minPrice = JSON.parse(minPrice);
+
          let [data] = await db.query(getByMinPrice, [minPrice]);
          if (!data.length) {
             return res.status(404).send({ message: "Not found data" });
@@ -117,6 +120,8 @@ async function getAll(req, res) {
       }
 
       if (washable) {
+         washable = JSON.parse(washable);
+
          let [data] = await db.query(getByWashable, [washable]);
          if (!data.length) {
             return res.status(404).send({ message: "Not found data" });
