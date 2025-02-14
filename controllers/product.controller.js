@@ -170,9 +170,7 @@ async function create(req, res) {
          } catch (error) {}
          return res.status(422).send({ message: error.details[0].message });
       }
-      console.log(req.body)
-      console.log("-------------------------")
-      console.log(value)
+
       let { categoriesId, ...data } = value;
       categoriesId = JSON.parse(categoriesId);
 

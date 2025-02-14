@@ -168,9 +168,7 @@ productRoute.get("/:id", getOne);
  *                 type: integer
  *                 example: 1
  *               categoriesId:
- *                 type: array
- *                 items:
- *                   type: integer
+ *                 type: string
  *                 example: [2, 5, 8]
  *               image:
  *                 type: string
