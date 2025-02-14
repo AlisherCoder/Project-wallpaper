@@ -31,6 +31,11 @@ async function getAll(req, res) {
          name_ru,
       } = req.query;
 
+      maxPrice = JSON.parse(maxPrice);
+      minPrice = JSON.parse(minPrice);
+      price = JSON.parse(price);
+      washable = JSON.parse(washable);
+
       if (price) {
          let [data] = await db.query(getByPrice, [price]);
          if (!data.length) {

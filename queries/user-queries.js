@@ -22,12 +22,12 @@ const getByname = `
                                 'brand', b.name_uz
                             )
                         )
-                    ) AS orderItems
+                    ) AS orderitems
         
                 FROM 
                 users u
                     LEFT JOIN orders o ON u.id = o.userId
-                    LEFT JOIN orderItems oi ON o.id = oi.orderId
+                    LEFT JOIN orderitems oi ON o.id = oi.orderId
                     LEFT JOIN products p ON oi.productId = p.id
                     LEFT JOIN categoryitems ci ON p.id = ci.productID
                     LEFT JOIN categories c ON ci.categoryID = c.id
@@ -60,12 +60,12 @@ const getAll = `
                         'brand', b.name_uz
                     )
                 )
-            ) AS orderItems
+            ) AS orderitems
 
         FROM 
         users u
             LEFT JOIN orders o ON u.id = o.userId
-            LEFT JOIN orderItems oi ON o.id = oi.orderId
+            LEFT JOIN orderitems oi ON o.id = oi.orderId
             LEFT JOIN products p ON oi.productId = p.id
             LEFT JOIN categoryitems ci ON p.id = ci.productID
             LEFT JOIN categories c ON ci.categoryID = c.id
@@ -96,12 +96,12 @@ const getOne = `
                         'brand', b.name_uz
                     )
                 )
-            ) AS orderItems
+            ) AS orderitems
 
         FROM 
         users u
             LEFT JOIN orders o ON u.id = o.userId
-            LEFT JOIN orderItems oi ON o.id = oi.orderId
+            LEFT JOIN orderitems oi ON o.id = oi.orderId
             LEFT JOIN products p ON oi.productId = p.id
             LEFT JOIN categoryitems ci ON p.id = ci.productID
             LEFT JOIN categories c ON ci.categoryID = c.id
@@ -133,12 +133,12 @@ const getBysurname = `
                                 'brand', b.name_uz
                             )
                         )
-                    ) AS orderItems
+                    ) AS orderitems
         
                 FROM 
                 users u
                     LEFT JOIN orders o ON u.id = o.userId
-                    LEFT JOIN orderItems oi ON o.id = oi.orderId
+                    LEFT JOIN orderitems oi ON o.id = oi.orderId
                     LEFT JOIN products p ON oi.productId = p.id
                     LEFT JOIN categoryitems ci ON p.id = ci.productID
                     LEFT JOIN categories c ON ci.categoryID = c.id
@@ -170,12 +170,12 @@ const getBynumber = `
                                 'brand', b.name_uz
                             )
                         )
-                    ) AS orderItems
+                    ) AS orderitems
         
                 FROM 
                 users u
                     LEFT JOIN orders o ON u.id = o.userId
-                    LEFT JOIN orderItems oi ON o.id = oi.orderId
+                    LEFT JOIN orderitems oi ON o.id = oi.orderId
                     LEFT JOIN products p ON oi.productId = p.id
                     LEFT JOIN categoryitems ci ON p.id = ci.productID
                     LEFT JOIN categories c ON ci.categoryID = c.id

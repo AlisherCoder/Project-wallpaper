@@ -17,7 +17,7 @@ const getAllOrder = `SELECT o.*,
                 'quantity', oi.quantity,
                 'totalSum', oi.totalSum
             )
-         ) AS orderItems
+         ) AS orderitems
 FROM orders AS o
 JOIN users AS u ON o.userId = u.id
 JOIN orderitems as oi ON oi.orderId = o.id
@@ -43,7 +43,7 @@ const getOneOrder = `SELECT o.*,
                 'quantity', oi.quantity,
                 'totalSum', oi.totalSum
             )
-         ) AS orderItems
+         ) AS orderitems
 FROM orders AS o
 JOIN users AS u ON o.userId = u.id
 JOIN orderitems as oi ON oi.orderId = o.id
@@ -70,7 +70,7 @@ const getByUserId = `SELECT o.*,
                 'quantity', oi.quantity,
                 'totalSum', oi.totalSum
             )
-         ) AS orderItems
+         ) AS orderitems
 FROM orders AS o
 JOIN users AS u ON o.userId = u.id
 JOIN orderitems as oi ON oi.orderId = o.id

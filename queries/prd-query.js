@@ -154,7 +154,7 @@ JOIN brands AS b ON p.brandsID = b.id
 JOIN countries AS c ON p.contryID = c.id
 JOIN categoryitems as cti ON cti.productID = p.id
 JOIN categories as ct ON ct.id = cti.categoryID
-where name_uz LIKE ?
+where p.name_uz LIKE ?
 GROUP BY p.id`;
 
 const getByNameRu = `SELECT p.*,
@@ -170,7 +170,7 @@ JOIN brands AS b ON p.brandsID = b.id
 JOIN countries AS c ON p.contryID = c.id
 JOIN categoryitems as cti ON cti.productID = p.id
 JOIN categories as ct ON ct.id = cti.categoryID
-where name_ru LIKE ?
+where p.name_ru LIKE ?
 GROUP BY p.id`;
 
 export {

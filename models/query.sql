@@ -67,7 +67,7 @@ CREATE TABLE orders(
     FOREIGN KEY (userId) REFERENCES users(id)
 );
 
-CREATE TABLE orderItems(
+CREATE TABLE orderitems(
     id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     orderId INT,
     productId INT,

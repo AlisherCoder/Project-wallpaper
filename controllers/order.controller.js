@@ -64,7 +64,7 @@ async function create(req, res) {
       for (let prd of products) {
          try {
             await db.query(
-               "insert into orderItems (orderId, productId, quantity, totalSum) values(?,?,?,?)",
+               "insert into orderitems (orderId, productId, quantity, totalSum) values(?,?,?,?)",
                [created.insertId, prd.productId, prd.quantity, prd.totalSum]
             );
          } catch (error) {
