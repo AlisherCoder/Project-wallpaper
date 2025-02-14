@@ -211,7 +211,7 @@ async function create(req, res) {
       for (let categoryId of categoriesId) {
          try {
             await db.query(
-               "insert into categoryItems (productId, categoryId) values (?,?)",
+               "insert into categoryitems (productId, categoryId) values (?,?)",
                [created.insertId, categoryId]
             );
          } catch (error) {

@@ -29,7 +29,7 @@ const getByname = `
                     LEFT JOIN orders o ON u.id = o.userId
                     LEFT JOIN orderItems oi ON o.id = oi.orderId
                     LEFT JOIN products p ON oi.productId = p.id
-                    LEFT JOIN categoryItems ci ON p.id = ci.productID
+                    LEFT JOIN categoryitems ci ON p.id = ci.productID
                     LEFT JOIN categories c ON ci.categoryID = c.id
                     LEFT JOIN brands b ON p.brandsID = b.id
                     WHERE u.firstName LIKE ?
@@ -67,7 +67,7 @@ const getAll = `
             LEFT JOIN orders o ON u.id = o.userId
             LEFT JOIN orderItems oi ON o.id = oi.orderId
             LEFT JOIN products p ON oi.productId = p.id
-            LEFT JOIN categoryItems ci ON p.id = ci.productID
+            LEFT JOIN categoryitems ci ON p.id = ci.productID
             LEFT JOIN categories c ON ci.categoryID = c.id
             LEFT JOIN brands b ON p.brandsID = b.id
             GROUP BY u.id;`
@@ -103,7 +103,7 @@ const getOne = `
             LEFT JOIN orders o ON u.id = o.userId
             LEFT JOIN orderItems oi ON o.id = oi.orderId
             LEFT JOIN products p ON oi.productId = p.id
-            LEFT JOIN categoryItems ci ON p.id = ci.productID
+            LEFT JOIN categoryitems ci ON p.id = ci.productID
             LEFT JOIN categories c ON ci.categoryID = c.id
             LEFT JOIN brands b ON p.brandsID = b.id
             WHERE u.id = ?
@@ -140,7 +140,7 @@ const getBysurname = `
                     LEFT JOIN orders o ON u.id = o.userId
                     LEFT JOIN orderItems oi ON o.id = oi.orderId
                     LEFT JOIN products p ON oi.productId = p.id
-                    LEFT JOIN categoryItems ci ON p.id = ci.productID
+                    LEFT JOIN categoryitems ci ON p.id = ci.productID
                     LEFT JOIN categories c ON ci.categoryID = c.id
                     LEFT JOIN brands b ON p.brandsID = b.id
                     WHERE u.lastName LIKE ?
@@ -177,7 +177,7 @@ const getBynumber = `
                     LEFT JOIN orders o ON u.id = o.userId
                     LEFT JOIN orderItems oi ON o.id = oi.orderId
                     LEFT JOIN products p ON oi.productId = p.id
-                    LEFT JOIN categoryItems ci ON p.id = ci.productID
+                    LEFT JOIN categoryitems ci ON p.id = ci.productID
                     LEFT JOIN categories c ON ci.categoryID = c.id
                     LEFT JOIN brands b ON p.brandsID = b.id
                     WHERE u.phoneNumber LIKE ?
