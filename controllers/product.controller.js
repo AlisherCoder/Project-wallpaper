@@ -172,8 +172,9 @@ async function create(req, res) {
       }
 
       let { categoriesId, ...data } = value;
+      console.log(categoriesId)
       categoriesId = JSON.parse(categoriesId);
-
+      console.log(categoriesId)
       let newPrd = {
          ...data,
          price: req.body.price || 0,
