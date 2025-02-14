@@ -172,22 +172,20 @@ async function create(req, res) {
       }
 
       let { categoriesId, ...data } = value;
-      
+
       if (typeof categoriesId === "string" && categoriesId.trim().length > 0) {
-         try {
-            categoriesId = JSON.parse(categoriesId);
-         } catch (error) {
-            return res.status(400).send({ message: "Invalid JSON format for categoriesId." });
-         }
+         categoriesId = categoriesId.split(",").map(Number);
       } else if (typeof categoriesId === "number") {
          categoriesId = [categoriesId]; // Agar bitta raqam kelsa, massivga aylantiramiz
       } else {
          categoriesId = [];
       }
-      
+
       // Tekshiramiz, agar array bo‘lmasa, xato qaytaramiz
       if (!Array.isArray(categoriesId)) {
-         return res.status(400).send({ message: "categoriesId must be an array." });
+         return res
+            .status(400)
+            .send({ message: "categoriesId must be an array." });
       }
       let newPrd = {
          ...data,
